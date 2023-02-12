@@ -60,17 +60,20 @@ def deploy_model_op(model):
 )
 def boston_pipeline():
     _preprocess_op = preprocess_op()
+    _preprocess_op.execution_options.caching_strategy.max_cache_staleness = 'P0D'
     
     _train_op = train_op(
         dsl.InputArgumentPath(_preprocess_op.outputs['x_train']),
         dsl.InputArgumentPath(_preprocess_op.outputs['y_train'])
     ).after(_preprocess_op)
+    _train_op.execution_options.caching_strategy.max_cache_staleness = 'P0D'
 
     _test_op = test_op(
         dsl.InputArgumentPath(_preprocess_op.outputs['x_test']),
         dsl.InputArgumentPath(_preprocess_op.outputs['y_test']),
         dsl.InputArgumentPath(_train_op.outputs['model'])
     ).after(_train_op)
+    _test_op.execution_options.caching_strategy.max_cache_staleness = 'P0D'
 
     deploy_model_op(
         dsl.InputArgumentPath(_train_op.outputs['model'])
