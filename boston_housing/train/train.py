@@ -7,7 +7,7 @@ def train_model(x_train, y_train):
     x_train_data = np.load(x_train)
     y_train_data = np.load(y_train)
 
-    model = SGDRegressor(verbose=1)
+    model = SGDRegressor(alpha=0.0001, epsilon=0.01, eta0=0.1,penalty='elasticnet',verbose=1)
     model.fit(x_train_data, y_train_data)
     
     joblib.dump(model, 'model.pkl')
